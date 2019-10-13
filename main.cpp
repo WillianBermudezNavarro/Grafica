@@ -14,8 +14,8 @@
 #include <math.h>
 #include <iostream>
 #include <vector>
-using namespace std;
-
+#define maxWD 800
+#define maxHT 600
 #define maxWD 800
 #define maxHT 600
 
@@ -30,12 +30,13 @@ void init()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 	glMatrixMode(GL_PROJECTION);
 	gluOrtho2D(0.0, 200.0, 0.0, 150.0);
+
 }
 void displayFcn(void)
 {
-	glClear(GL_COLOR_BUFFER_BIT); 
-	glColor3f(1.0,0.0,0.0); 
-	glPointSize(2.0); 
+	glClear(GL_COLOR_BUFFER_BIT);
+	glColor3f(1.0,0.0,0.0);
+	glPointSize(2.0);
 }
 
 void winReshapeFcn(GLint newWidth, GLint newHeight)
@@ -56,8 +57,22 @@ void plotPoint(GLint x, GLint y)
 	glEnd();
 }
 
-int round(int a) 
-{ return float (a + 0.5); }
+void traslacion(int px, int py, int tx, int ty)
+{
+	int fx = px, fy = py;
+	//glClear(GL_COLOR_BUFFER_BIT);
+	px = px + tx;
+	py = py + ty;
+	if (px > maxWD || px < 0 || py > maxHT || py < 0)
+	{
+		px = fx;
+		py = fy;
+	}
+	plotPoint(px, py);
+	glFlush();
+}
+
+inline int round (const float a) { return int (a + 0.5); }
 void linea(int x0, int y0, int xEnd, int yEnd)
 {
 	int dx = xEnd - x0, dy = yEnd - y0, steps, k;
@@ -74,6 +89,7 @@ void linea(int x0, int y0, int xEnd, int yEnd)
 		x += xIncrement;
 		y += yIncrement;
 		plotPoint(round (x), round (y));
+		traslacion(10,5,x, y)
 	}
 }
 void poligono()
@@ -126,7 +142,7 @@ int main(int argc, char**argv)
 	glutInitWindowPosition(200,100);
 	
 	glutInitWindowSize(winWidth, winHeight );
-	glutCreateWindow("Poligono con puntos por mouse" );
+	glutCreateWindow("Traslacion de figura" );
 	init();
 	glutDisplayFunc(displayFcn);
 	glutReshapeFunc(winReshapeFcn);
